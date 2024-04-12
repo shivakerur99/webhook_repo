@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flask Github-webhook app</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body>
+    <div class="title2">
+        Flask github-webhook App
+    </div>
+    <div class="container">
+        <h1>Fetching and showing data from MongoDB for every 15 seconds</h1>
+        <h1 id="eventInfo"></h1>
+    </div>
+    <div class="btn">
+        <button onclick="callApi()">Update Github Data log</button>
+    </div>
+    <script>
+        function callApi() {
+            fetch(
+                'http://localhost:3000/get-data',
+                {
+                    method: 'get',
+                    mode: "no-cors",
+                }
+            ).then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data);
+                eventType = data.eventType;
+                let output = '';
+
+                if (data.fromBranch === '') {
+                    output = `${data.author} pushed to ${data.toBranch} on ${data.timestamp}`;
+                } else {
+                    output = `${data.author} submitted a pull request from ${data.fromBranch} to ${data.toBranch} on ${data.timestamp}`;
+                }
+                document.getElementById("eventInfo").innerText = output;
+            }).catch(function (error) {
+                console.log('error : ');
+                console.log(error);
+            });
+        }
+    </script>
+</body>
+
+</html>
